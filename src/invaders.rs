@@ -26,7 +26,9 @@ impl Invaders {
                     && (y > 0)
                     && (y < 9)
                     && (x % 2 == 0)
-                    && (y % 2 == 0) {
+                    && (y % 2 == 0) 
+                
+                    {
                     army.push(Invader { x, y });        
                 }
             }
@@ -71,9 +73,26 @@ impl Invaders {
         }
         false
     }
+    pub fn all_killed(&self) -> bool {
+        self.army.is_empty()
+    }
+    pub fn reached_bottom(&self) -> bool {
+        self.army.iter().map(|invader| invader.y).max().unwrap_or(0) >= NUM_ROWS -1
+    }
+    pub fn kill_invader_at(&mut self, x: usize, y: usize) -> bool {
+        if let Some(idx) = self
+            .army
+            .iter()
+            .position(|invader| (invader.x == x) && (invader.y == y))
+        {        
+            self.army.remove(idx);
+            return true;
+        } 
+        false
+    }    
 }
 
-impl Drawable for Invader {
+impl Drawable for Invaders {
     fn draw(&self, frame: &mut Frame) {
         for invader in self.army.iter() {
             frame[invader.x][invader.y] = if (self.move_timer.time_left.as_secs_f32()
@@ -84,5 +103,4 @@ impl Drawable for Invader {
                 };
         }
     }
-
 }
